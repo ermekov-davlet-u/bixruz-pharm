@@ -16,6 +16,7 @@ import RecipeDetail from "./pages/RecipeDetail";
 import LoginPage from "./pages/LoginPage"; // компонент страницы логина
 import "./App.css";
 import MenuNav from "./components/MenuNav";
+import { socket } from "./socket";
 
 // Создаём контекст авторизации
 const AuthContext = createContext();
@@ -39,22 +40,38 @@ function PrivateRoute({ children }) {
 }
 
 export default function App() {
-  // Состояние пользователя — null если не залогинен
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    // пробуем взять пользователя из localStorage
+    const saved = localStorage.getItem("user");
+    return saved ? JSON.parse(saved) : null;
+  });
 
-  // Пример простого логина
-  const login = ({ email, password }) => {
-    // Здесь должна быть реальная авторизация, например запрос на сервер.
-    // Для примера — простой хардкод
-    if (email === "admin" && password === "123") {
-      setUser({ email });
-      return true;
-    }
-    return false;
+  const login = async ({ email, password }) => {
+    return new Promise((resolve) => {
+      alert("test")
+      socket.emit("db_rows", {
+        table: "pharmacists",
+        fields: [{ name: "*" }],
+        where: `WHERE email = '${email}' AND password_hash = HASHBYTES('SHA2_256', '${password}')`
+      }, (data) => {
+        if (data.length === 0) {
+          return alert("Invalid credentials");
+        }
+        if (data) {
+          setUser(data[0]);
+          localStorage.setItem("user", JSON.stringify(data[0]));
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+      });
+    });
   };
 
-  // Выход
-  const logout = () => setUser(null);
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem("user");
+  };
 
   return (
     <AuthContext.Provider value={{ user, login, logout }}>
@@ -64,50 +81,32 @@ export default function App() {
             <MenuNav />
           )}
           <Routes>
-            <Route
-              path="/login"
-              element={<LoginPageWrapper />}
-            />
-            <Route
-              path="/"
-              element={
-                <PrivateRoute>
-                  <ScanPage />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/form"
-              element={
-                <PrivateRoute>
-                  <FormPage />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/drug"
-              element={
-                <PrivateRoute>
-                  <DrugPage />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/recipes"
-              element={
-                <PrivateRoute>
-                  <RecipeList />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/recipe/:recipeCode"
-              element={
-                <PrivateRoute>
-                  <RecipeDetail />
-                </PrivateRoute>
-              }
-            />
+            <Route path="/login" element={<LoginPageWrapper />} />
+            <Route path="/" element={
+              <PrivateRoute>
+                <ScanPage />
+              </PrivateRoute>
+            } />
+            <Route path="/form" element={
+              <PrivateRoute>
+                <FormPage />
+              </PrivateRoute>
+            } />
+            <Route path="/drug" element={
+              <PrivateRoute>
+                <DrugPage />
+              </PrivateRoute>
+            } />
+            <Route path="/recipes" element={
+              <PrivateRoute>
+                <RecipeList />
+              </PrivateRoute>
+            } />
+            <Route path="/recipe/:recipeCode" element={
+              <PrivateRoute>
+                <RecipeDetail />
+              </PrivateRoute>
+            } />
             <Route path="*" element={<Navigate to={user ? "/" : "/login"} />} />
           </Routes>
         </div>
@@ -115,6 +114,7 @@ export default function App() {
     </AuthContext.Provider>
   );
 }
+
 
 // Обёртка для страницы логина, чтобы иметь доступ к контексту и навигации
 function LoginPageWrapper() {

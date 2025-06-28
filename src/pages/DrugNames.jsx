@@ -49,19 +49,30 @@ export default function DrugNames() {
             <div className="">
                 <button className="btn btn-primary mb-3" onClick={addDrug}>Добавить</button>
             </div>
-            <table className="table table-bordered">
-                <thead>
-                    <tr><th>ID</th><th>Название</th><th>Форма</th></tr>
-                </thead>
-                <tbody>
-                    {drugs.map(d => {
-                        const formName = forms.find(f => f.codeid === d.drug_form_codeid)?.nameid || "—";
-                        return <tr key={d.codeid}><td>{d.codeid}</td><td>{d.nameid}</td><td>{formName}</td>
-                            {/* <td><button className="btn btn-danger btn-sm" onClick={() => deleteForm(d.codeid)}>Удалить</button></td> */}
-                        </tr>
+            <div className="table-main">
+                <div className="table-div">
+                    {/* Заголовок */}
+                    <div className="table-row table-header">
+                        <div className="table-cell id-cell">ID</div>
+                        <div className="table-cell name-cell">Название</div>
+                        <div className="table-cell form-cell">Форма</div>
+                    </div>
+
+                    {/* Строки */}
+                    {drugs.map((d) => {
+                        const formName =
+                            forms.find((f) => f.codeid === d.drug_form_codeid)?.nameid || "—";
+
+                        return (
+                            <div className="table-row" key={d.codeid}>
+                                <div className="table-cell id-cell">{d.codeid}</div>
+                                <div className="table-cell name-cell">{d.nameid}</div>
+                                <div className="table-cell form-cell">{formName}</div>
+                            </div>
+                        );
                     })}
-                </tbody>
-            </table>
+                </div>
+            </div>
         </div>
     );
 }

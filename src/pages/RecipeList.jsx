@@ -75,35 +75,37 @@ export default function RecipeList() {
                     </button>
                 </div>
             </div>
-            <table className="table table-striped table-bordered">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Код рецепта</th>
-                        <th>Дата</th>
-                        {/* <th>Врач</th> */}
-                        <th>Просмотр</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {filtered.map(r => (
-                        <tr key={r.id}>
-                            <td>{r.codeid}</td>
-                            <td>{r.patient_codeid}</td>
-                            <td>{new Date(r.created_at).toLocaleString()}</td>
-                            {/* <td>{r.doctor_codeid}</td> */}
-                            <td>
+            <div className="table-main">
+                <div className="table-div">
+                    {/* Заголовок */}
+                    <div className="table-row table-header">
+                        <div className="table-cell id-cell">ID</div>
+                        <div className="table-cell code-cell">Код рецепта</div>
+                        <div className="table-cell date-cell">Дата</div>
+                        <div className="table-cell actions-cell">Просмотр</div>
+                    </div>
+
+                    {/* Строки */}
+                    {filtered.map((r) => (
+                        <div className="table-row" key={r.id}>
+                            <div className="table-cell id-cell">{r.codeid}</div>
+                            <div className="table-cell code-cell">{r.patient_codeid}</div>
+                            <div className="table-cell date-cell">
+                                {new Date(r.created_at).toLocaleString()}
+                            </div>
+                            <div className="table-cell actions-cell">
                                 <button
                                     className="btn btn-info btn-sm"
                                     onClick={() => navigate(`/recipe/${r.public_token}`)}
                                 >
                                     Открыть
                                 </button>
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     ))}
-                </tbody>
-            </table>
+                </div>
+            </div>
+
         </div>
     );
 }

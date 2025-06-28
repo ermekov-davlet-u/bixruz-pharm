@@ -578,8 +578,69 @@ body {
   }
 }
 
-table {
+.table-main {
   width: 100%;
-  display: block;
-  overflow: scroll;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 0;
+  padding: 0;
+  padding-top: 24px;
+  box-sizing: border-box;
+}
+
+/* ПК версия — таблица во всю ширину */
+.table-div {
+  display: flex;
+  flex-direction: column;
+  width: 100%; /* исправлено! */
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.table-row {
+  display: flex;
+  flex-direction: row;
+  border-bottom: 1px solid #ddd;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.table-row:nth-child(even):not(.table-header) {
+  background: #f9f9f9;
+}
+
+.table-header {
+  display: flex;
+  font-weight: bold;
+  background: var(--primary-blue, #00467b);
+  color: white;
+  border-bottom: 2px solid #222;
+  box-sizing: border-box;
+}
+
+.table-cell {
+  flex: 1 1 0; /* растягиваем ячейки равномерно */
+  padding: 8px 16px;
+  border-right: 1px solid #ddd;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.table-cell:last-child {
+  border-right: none;
+}
+
+/* Мобильная версия */
+@media (max-width: 768px) {
+  .table-div {
+    width: max-content; /* только на мобилке */
+  }
+
+  .table-cell {
+    flex: 0 0 120px; /* фикс ширина на мобилке для скролла */
+    padding: 6px 12px;
+    font-size: 0.9rem;
+  }
 }
