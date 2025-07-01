@@ -52,7 +52,7 @@ export default function RecipeList() {
         <div className="container mt-4">
             <h4 className="mb-3">Список выписанных рецептов</h4>
 
-            <div className="row mb-3">
+            <div className="filter mb-3">
                 <div className="col-md-3">
                     <input
                         className="form-control"

@@ -74,9 +74,9 @@ export default function RecipeDetail() {
         <div className="container mt-4">
             <h4>
                 Детали рецепта:{" "}
-                <a href={`http://bihruz.mis.ibm.kg/recipe/view?token=${recipe.public_token}`} target="_blank" rel="noreferrer">
+                {/* <a href={`http://bihruz.mis.ibm.kg/recipe/view?token=${recipe.public_token}`} target="_blank" rel="noreferrer">
                     http://bihruz.mis.ibm.kg/recipe/view?token={recipe.public_token}
-                </a>
+                </a> */}
             </h4>
 
             <p className="prescription-meta">
@@ -108,7 +108,7 @@ export default function RecipeDetail() {
                 </button>
             )}
 
-            <h5>Состав рецепта</h5>
+            {/* <h5>Состав рецепта</h5> */}
             <div className="table-main">
                 <div className="table-div">
                     {/* Заголовок */}

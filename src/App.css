@@ -387,8 +387,8 @@ body {
   button.btn-primary,
   button.btn-danger {
     width: 100%;
-    padding: 12px;
-    font-size: 1rem;
+    padding: 8px;
+    font-size: 14px;
   }
 
   .filters-bar {
@@ -641,6 +641,29 @@ body {
   .table-cell {
     flex: 0 0 120px; /* фикс ширина на мобилке для скролла */
     padding: 6px 12px;
-    font-size: 0.9rem;
+    font-size: 1.2rem;
   }
+}
+
+.filter {
+  display: flex;
+  align-items: center;
+}
+
+@media screen and (max-width: 480px) {
+  .filter {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 4px;
+  }
+}
+
+.btn-info {
+  padding: 4px 8px;
+  color: white;
+  background-color: #00467b;
+  outline: none;
+  border: none;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px #7a94fd;
 }

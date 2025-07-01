@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { Html5Qrcode } from "html5-qrcode";
+import { useNavigate } from "react-router-dom";
 
 export default function ScanRecipe() {
     const readerRef = useRef(null);
     const qrScannerRef = useRef(null);
     const isScanningRef = useRef(false);
     const [message, setMessage] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
         const scannerId = "reader";
@@ -14,22 +16,38 @@ export default function ScanRecipe() {
 
         qrScanner
             .start(
-                { facingMode: "environment" }, // ✅ включаем заднюю камеру
+                { facingMode: "environment" }, // <-- задняя камера
+                { fps: 10, qrbox: 250 },
                 (decodedText) => {
                     if (!isScanningRef.current) return;
-                    setMessage(`✅ Рецепт найден: ${decodedText}. Скачивание...`);
+
+                    // Извлечь токен, если это URL
+                    let recipeCode = decodedText;
+                    try {
+                        const url = new URL(decodedText);
+                        const tokenParam = url.searchParams.get("token");
+                        if (tokenParam) {
+                            recipeCode = tokenParam;
+                        }
+                    } catch (e) {
+                        // decodedText — это не URL, значит это просто токен
+                    }
+
+                    setMessage(`✅ Рецепт найден: ${recipeCode}. Переход...`);
                     isScanningRef.current = false;
 
                     qrScanner
                         .stop()
                         .then(() => {
-                            window.location.href = decodedText;
+                            navigate(`/recipe/${recipeCode}`);
                         })
                         .catch((err) => {
                             console.warn("Ошибка остановки:", err);
                         });
                 },
-                () => { }
+                (errorMessage) => {
+                    console.warn("Ошибка сканирования:", errorMessage);
+                }
             )
             .then(() => {
                 isScanningRef.current = true;
@@ -49,7 +67,7 @@ export default function ScanRecipe() {
                     .catch(() => { });
             }
         };
-    }, []);
+    }, [navigate]);
 
     return (
         <div className="page-container">
